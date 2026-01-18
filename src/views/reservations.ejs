@@ -3,7 +3,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4 class="mb-0">Bookings</h4>
-      <button class="btn btn-warning btn-sm text-white">
+      <button class="btn btn-warning btn-sm text-white" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">
         + Add Booking
       </button>
     </div>
@@ -22,11 +22,11 @@
         </thead>
         <tbody>
             <% let count = 1; %>
-        <% Users.forEach(user => { %>
+        <%         Reservations.forEach(Reservation => { %>
           <tr>
             <td><%= count++ %></td>
-            <td><%= user.FirstName %></td>
-            <td><%= user.LastName %></td>
+            <td><%= Reservation.FirstName %></td>
+            <td><%= Reservation.LastName %></td>
             <td>
               <span class="badge bg-success">Confirmed</span>
             </td>
@@ -39,6 +39,68 @@
         </tbody>
       </table>
     </div>
+    <!-- New booking modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+          <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <form id="newReservationSubmit" method="post">
+              <div class="mb-3">
+                  <label for="recipient-name" class="col-form-label">Recipient:</label>
+                  <input type="text" name="FirstName" class="form-control" id="FirstName">
+              </div>
+              <div class="mb-3">
+                  <label for="message-text" class="col-form-label">Message:</label>
+                  <input type="text" name="LastName" class="form-control" id="LastName">
 
+              </div>
+            
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+              <button type="Submit" id="submitBtn" class="btn btn-warning btn-sm text-white">Send message</button>
+          </div>
+          <button class="btn btn-warning btn-sm text-white" id="spinnerBtn" type="button" disabled>
+            <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>
+            <span role="status">Loading...</span>
+          </button>
+            </form>
+          </div>
+      </div>
+      
+    </div>
   </div>
 </div>
+
+<script>
+  const form = document.getElementById('newReservationSubmit');
+  const submitBtn = document.getElementById('submitBtn');
+  const spinnerBtn = document.getElementById('spinnerBtn');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    submitBtn.style.display = 'none';
+    spinnerBtn.style.display = 'inline-block';
+
+    try {
+      const res = await fetch('/reservations/newReservation',{
+        method: 'POST',
+        body: new FormData(form)
+      });
+      if(!res.ok) throw new Error();
+      
+      alert('Data saved succefully!');
+      form.reset();
+      location.reload();
+    } catch (error) {
+      console.log(error);
+      alert('Error saving data!');
+    }
+  })
+
+</script>

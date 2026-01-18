@@ -15,13 +15,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(layouts);
 app.set('layout', 'layout')
 
+
+//Data save
+app.use(express.json());
+
 //routes
 const userRoutes = require('./routes/userRoutes');
+const reservationRoutes = require('./routes/reservationRoutes');
+
 app.use('/', userRoutes);
+app.use('/reservations', reservationRoutes);
 
 //db connect
 connectDB();
-
-app.use(express.urlencoded({ extended: true }));
 
 module.exports = app;
